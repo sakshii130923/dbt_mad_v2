@@ -1,0 +1,40 @@
+name: 'dbt_mad'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'dbt_mad'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+models:
+  ## see docs: https://docs.elementary-data.com/
+  elementary:
+    ## elementary models will be created in the schema '<your_schema>_elementary'
+    +schema: "elementary"
+    ## To disable elementary for dev, uncomment this:
+    # enabled: "{{ target.name in ['prod','analytics'] }}"
+    
+  dbt_mad:
+    staging:
+      +materialized: view          # lightweight, no storage cost
+      +schema: dev_staging             # output to 'dev_staging' schema
+    intermediate:
+      +materialized: table         # persisted for join performance
+      +schema: dev_intermediate    # output to 'dev_intermediate' schema
+    marts:
+      core:
+        +materialized: table       # persisted for query performance
+        +schema: dev_marts         # output to 'dev_marts' schema
