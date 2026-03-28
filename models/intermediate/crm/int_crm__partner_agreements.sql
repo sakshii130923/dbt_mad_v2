@@ -9,14 +9,14 @@ with source_data as (
 deduplicated as (
     {{ dbt_utils.deduplicate(
         relation='source_data',
-        partition_by='id',
+        partition_by='partner_agreement_id',
         order_by='updated_at desc',
        )
     }}
 )
 
 select
-    id::text,
+    partner_agreement_id::text,
     partner_id::text,
     current_status,
     conversion_stage,
@@ -26,10 +26,7 @@ select
     non_conversion_reason,
     potential_child_count,
     expected_conversion_day,
-    removed,
+    is_removed,
     created_at,
-    updated_at,
-    _airbyte_raw_id,
-    _airbyte_extracted_at,
-    _airbyte_meta
+    updated_at
 from deduplicated

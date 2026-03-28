@@ -4,7 +4,7 @@
 -- Flow: int_crm__mous → dim_mou
 
 select
-    id as mou_id,
+    mou_id,
     partner_id,
     mou_url,
     mou_sign,

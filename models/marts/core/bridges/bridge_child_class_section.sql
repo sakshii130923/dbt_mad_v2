@@ -8,7 +8,7 @@ select
     child_id,
     class_section_id,
     academic_year,
-    removed_boolean as is_removed,
+    is_removed,
     created_date,
     modified_date
 from {{ ref('int_bubble__child_class_section') }}

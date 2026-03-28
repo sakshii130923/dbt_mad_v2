@@ -7,8 +7,8 @@ select
     subject_id,
     subject_name,
     program_id,
-    removed as is_removed,
+    is_removed,
     created_date,
     modified_date
 from {{ ref('int_bubble__subject') }}
-where removed = false
+where is_removed = false

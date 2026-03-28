@@ -4,7 +4,7 @@
 -- Flow: int_crm__meetings → fct_meetings
 
 select
-    id as meeting_id,
+    meeting_id,
     partner_id,
     poc_id,
     user_id,

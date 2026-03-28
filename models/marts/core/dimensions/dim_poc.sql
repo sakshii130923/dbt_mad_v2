@@ -4,14 +4,14 @@
 -- Flow: int_crm__pocs → dim_poc
 
 select
-    id as poc_id,
+    poc_id,
     partner_id,
     poc_name,
     poc_email,
     poc_contact,
     poc_designation,
     date_of_first_contact,
-    removed as is_removed,
+    is_removed,
     created_at,
     updated_at
 from {{ ref('int_crm__pocs') }}

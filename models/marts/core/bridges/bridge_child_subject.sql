@@ -9,11 +9,11 @@ select
     css.subject_id,
     css.class_section_id,
     css.academic_year,
-    css.removed as is_removed,
+    css.is_removed,
     css.created_date,
     css.modified_date
 from {{ ref('int_bubble__class_section_subject') }} css
 inner join {{ ref('int_bubble__child_class_section') }} ccs
     on css.class_section_id = ccs.class_section_id
-    and ccs.removed_boolean = false
-where css.removed = false
+    and ccs.is_removed = false
+where css.is_removed = false

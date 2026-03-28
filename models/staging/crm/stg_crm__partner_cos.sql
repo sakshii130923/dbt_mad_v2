@@ -4,12 +4,12 @@ with source as (
     select * from {{ source('crm_raw', 'partner_cos') }}
 )
 select
-    id,
-    partner_id,
-    co_id,
-    "createdAt" as created_at,
-    "updatedAt" as updated_at,
+    id::integer as partner_co_id,
+    partner_id::integer as partner_id,
+    co_id::integer as co_id,
+    "createdAt"::timestamp as created_at,
+    "updatedAt"::timestamp as updated_at,
     _airbyte_raw_id,
-    _airbyte_extracted_at,
+    _airbyte_extracted_at::timestamp as _airbyte_extracted_at,
     _airbyte_meta
 from source

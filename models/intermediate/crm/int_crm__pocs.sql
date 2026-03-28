@@ -9,24 +9,21 @@ with source_data as (
 deduplicated as (
     {{ dbt_utils.deduplicate(
         relation='source_data',
-        partition_by='id',
+        partition_by='poc_id',
         order_by='updated_at desc',
        )
     }}
 )
 
 select
-    id::text,
+    poc_id::text,
     partner_id::text,
     poc_name,
     poc_email,
     poc_contact,
     poc_designation,
     date_of_first_contact,
-    removed,
+    is_removed,
     created_at,
-    updated_at,
-    _airbyte_raw_id,
-    _airbyte_extracted_at,
-    _airbyte_meta
+    updated_at
 from deduplicated

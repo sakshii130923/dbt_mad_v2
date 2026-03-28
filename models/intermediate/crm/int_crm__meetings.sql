@@ -9,14 +9,14 @@ with source_data as (
 deduplicated as (
     {{ dbt_utils.deduplicate(
         relation='source_data',
-        partition_by='id',
+        partition_by='meeting_id',
         order_by='updated_at desc',
        )
     }}
 )
 
 select
-    id::text,
+    meeting_id::text,
     partner_id::text,
     poc_id::text,
     user_id::text,
@@ -24,8 +24,5 @@ select
     follow_up_meeting_date,
     follow_up_meeting_scheduled,
     created_at,
-    updated_at,
-    _airbyte_raw_id,
-    _airbyte_extracted_at,
-    _airbyte_meta
+    updated_at
 from deduplicated

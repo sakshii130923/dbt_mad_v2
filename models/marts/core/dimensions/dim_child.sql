@@ -12,13 +12,13 @@ select
     age,
     city,
     date_of_enrollment,
-    mother_tounge,
+    mother_tongue,
     is_active,
-    removed as is_removed,
+    is_removed,
     class_id,
     school_class_id,
     school_id,
     created_date,
     modified_date
 from {{ ref('int_bubble__child') }}
-where removed = false
+where is_removed = false

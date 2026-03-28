@@ -21,8 +21,8 @@ select
     mou_end_date,
     total_child_count,
     confirmed_child_count,
-    removed as is_removed,
+    is_removed,
     created_date,
     modified_date
 from {{ ref('stg_bubble__partner') }}
-where removed = false
+where is_removed = false

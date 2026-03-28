@@ -8,7 +8,7 @@ select
     school_id,
     volunteer_id,
     academic_year,
-    removed as is_removed,
+    is_removed,
     created_date,
     modified_date
 from {{ ref('int_bubble__school_volunteer') }}

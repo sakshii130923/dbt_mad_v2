@@ -5,12 +5,12 @@ with raw_class as (
 )
 select
     "_id",
-    "class_id_number" as class_id,
+    "class_id_number"::integer as class_id,
     "class_name_text" as class_name,
-    "program_id_number" as program_id,
-    "Created_Date" as created_date,
-    "Modified_Date" as modified_date,
+    "program_id_number"::integer as program_id,
+    "Created_Date"::date as created_date,
+    "Modified_Date"::date as modified_date,
     "_airbyte_raw_id",
-    "_airbyte_extracted_at",
+    "_airbyte_extracted_at"::timestamp as _airbyte_extracted_at,
     "_airbyte_meta"
 from raw_class

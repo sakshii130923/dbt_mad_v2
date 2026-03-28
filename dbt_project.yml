@@ -30,10 +30,20 @@ models:
   dbt_mad:
     staging:
       +materialized: view          # lightweight, no storage cost
-      +schema: dev_staging             # output to 'dev_staging' schema
+      bubble:
+        +schema: dev_staging_bubble
+      crm:
+        +schema: dev_staging_crm
+      platform_commons:
+        +schema: dev_staging_pc
     intermediate:
       +materialized: table         # persisted for join performance
-      +schema: dev_intermediate    # output to 'dev_intermediate' schema
+      bubble:
+        +schema: dev_intermediate_bubble
+      crm:
+        +schema: dev_intermediate_crm
+      platform_commons:
+        +schema: dev_intermediate_pc
     marts:
       core:
         +materialized: table       # persisted for query performance

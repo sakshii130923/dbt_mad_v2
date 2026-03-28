@@ -14,11 +14,11 @@ select
         then extract(epoch from (end_time::timestamp - start_time::timestamp)) / 60
         else null
     end as duration_minutes,
-    reccuring as is_recurring,
+    is_recurring,
     academic_year,
     school_id,
-    removed as is_removed,
+    is_removed,
     created_date,
     modified_date
 from {{ ref('int_bubble__slot') }}
-where removed = false
+where is_removed = false

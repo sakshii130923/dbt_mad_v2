@@ -4,7 +4,7 @@
 -- Flow: int_crm__partner_agreements → fct_partner_agreements
 
 select
-    id as agreement_id,
+    partner_agreement_id as agreement_id,
     partner_id,
     current_status,
     conversion_stage,
@@ -14,7 +14,7 @@ select
     non_conversion_reason,
     potential_child_count,
     expected_conversion_day,
-    removed as is_removed,
+    is_removed,
     created_at,
     updated_at
 from {{ ref('int_crm__partner_agreements') }}

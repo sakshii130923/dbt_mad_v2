@@ -12,8 +12,8 @@ select
     scsv.academic_year,
     scsv.created_date as assigned_date,
     scsv.modified_date,
-    case when scsv.removed = true then false else true end as is_active,
-    scsv.removed as is_removed,
+    case when scsv.is_removed = true then false else true end as is_active,
+    scsv.is_removed,
     scs.is_active as slot_is_active
 from {{ ref('int_bubble__slot_class_section_volunteer') }} scsv
 left join {{ ref('int_bubble__slot_class_section') }} scs

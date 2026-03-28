@@ -4,7 +4,7 @@
 -- Flow: int_crm__poc_partners → bridge_poc_partner
 
 select
-    id as poc_partner_id,
+    poc_partner_id,
     poc_id,
     partner_id,
     created_at,
