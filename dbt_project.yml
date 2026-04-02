@@ -20,13 +20,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 models:
-  ## see docs: https://docs.elementary-data.com/
-  elementary:
-    ## elementary models will be created in the schema '<your_schema>_elementary'
-    +schema: "elementary"
-    ## To disable elementary for dev, uncomment this:
-    # enabled: "{{ target.name in ['prod','analytics'] }}"
-    
   dbt_mad:
     staging:
       +materialized: view          # lightweight, no storage cost
@@ -34,17 +27,17 @@ models:
         +schema: dev_staging_bubble
       crm:
         +schema: dev_staging_crm
-      platform_commons:
-        +schema: dev_staging_pc
     intermediate:
       +materialized: table         # persisted for join performance
       bubble:
         +schema: dev_intermediate_bubble
       crm:
         +schema: dev_intermediate_crm
-      platform_commons:
-        +schema: dev_intermediate_pc
     marts:
       core:
         +materialized: table       # persisted for query performance
         +schema: dev_marts         # output to 'dev_marts' schema
+    prod:
+      +materialized: table
+      analytics:
+        +schema: dev_prod_analytics  # dashboard analytics models
