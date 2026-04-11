@@ -2,6 +2,7 @@
 
 -- School Data Comparison: CRM vs Bubble child count metrics
 -- UNION ALL: CRM schools (converted agreements) + Bubble-only schools
+-- Optimized: Uses shared int_bubble__school_metrics for child counts
 
 WITH crm_partners AS (
     SELECT
@@ -35,7 +36,7 @@ converted_partners AS (
 latest_mou AS (
     SELECT partner_id, mou_sign_date, confirmed_child_count,
         CASE WHEN mou_sign_date IS NOT NULL 
-            THEN FLOOR((CURRENT_DATE - mou_sign_date::date)::numeric / 7)::integer
+            THEN FLOOR((CURRENT_DATE - mou_sign_date) / 7)
         END AS weeks_since_mou_signed
     FROM (
         SELECT partner_id, mou_sign_date, confirmed_child_count, created_at, mou_id,
@@ -44,14 +45,7 @@ latest_mou AS (
     ) ranked WHERE rn = 1
 ),
 
-active_children AS (
-    SELECT school_id, COUNT(*) AS count FROM {{ ref('dim_child') }} WHERE is_active = true GROUP BY school_id
-),
-
-dropped_children AS (
-    SELECT school_id, COUNT(*) AS count FROM {{ ref('dim_child') }} WHERE is_active = false GROUP BY school_id
-),
-
+-- TODO: Integrate Platform Commons (PC) data for dropped child tracking
 actual_dropped_children AS (
     SELECT school_id, COUNT(*) AS count
     FROM {{ ref('int_bubble__child_removal_log') }}
@@ -65,51 +59,52 @@ actual_dropped_children AS (
 )
 
 -- CRM schools with converted agreements
+-- TODO: Integrate Platform Commons (PC) data for Partner status and child count metrics
 SELECT
-    p.partner_id::text          AS "Partner ID",
+    p.partner_id                AS "Partner ID",
     p.partner_name              AS "Partner Name",
     p.co_user_id                AS "CO ID",
     p.co_name                   AS "CO Name",
     m.mou_sign_date             AS "MOU Sign Date",
     m.weeks_since_mou_signed    AS "Weeks Since MOU Signed",
     m.confirmed_child_count     AS "Confirmed Child Count (CRM)",
-    COALESCE(ac.count, 0)       AS "Active Child Count (Bubble)",
-    COALESCE(dc.count, 0)       AS "Dropped Child Count (Bubble)",
+    COALESCE(sm.active_child_count, 0)  AS "Active Child Count (Bubble)",
+    COALESCE(sm.dropped_child_count, 0) AS "Dropped Child Count (Bubble)",
     COALESCE(adc.count, 0)      AS "Actual Dropped Child Count (Bubble)",
-    CASE WHEN ac.count > 0 OR dc.count > 0 THEN 'BOTH' ELSE 'CRM' END AS "Platform Presence",
+    CASE WHEN COALESCE(sm.active_child_count, 0) > 0 OR COALESCE(sm.dropped_child_count, 0) > 0 
+        THEN 'BOTH' ELSE 'CRM' END AS "Platform Presence",
     100                         AS "CRM Status",
     CASE WHEN m.confirmed_child_count > 0 
-        THEN ROUND((COALESCE(ac.count, 0)::numeric / m.confirmed_child_count::numeric) * 100, 2)
+        THEN ROUND((COALESCE(sm.active_child_count, 0) / m.confirmed_child_count::numeric) * 100, 2)
     END                         AS "Child Count Ratio (Bubble / CRM)"
 FROM crm_partners p
 INNER JOIN converted_partners cp ON p.partner_id = cp.partner_id
 LEFT JOIN latest_mou m           ON p.partner_id = m.partner_id
-LEFT JOIN active_children ac     ON p.partner_id = ac.school_id
-LEFT JOIN dropped_children dc    ON p.partner_id = dc.school_id
+LEFT JOIN {{ ref('int_bubble__school_metrics') }} sm ON p.partner_id = sm.school_id
 LEFT JOIN actual_dropped_children adc ON p.partner_id = adc.school_id
 
 UNION ALL
 
 -- Bubble-only schools (not in CRM)
+-- TODO: Integrate Platform Commons (PC) data to identify unified schools
 SELECT
-    bp.bubble_partner_id::text  AS "Partner ID",
+    bp.bubble_partner_id        AS "Partner ID",
     bp.partner_name             AS "Partner Name",
     NULL                        AS "CO ID",
     NULL                        AS "CO Name",
     NULL                        AS "MOU Sign Date",
     NULL                        AS "Weeks Since MOU Signed",
     NULL                        AS "Confirmed Child Count (CRM)",
-    COALESCE(ac.count, 0)       AS "Active Child Count (Bubble)",
-    COALESCE(dc.count, 0)       AS "Dropped Child Count (Bubble)",
+    COALESCE(sm.active_child_count, 0)  AS "Active Child Count (Bubble)",
+    COALESCE(sm.dropped_child_count, 0) AS "Dropped Child Count (Bubble)",
     COALESCE(adc.count, 0)      AS "Actual Dropped Child Count (Bubble)",
     'BUBBLE'                    AS "Platform Presence",
     0                           AS "CRM Status",
     NULL                        AS "Child Count Ratio (Bubble / CRM)"
 FROM {{ ref('dim_bubble_partner') }} bp
-LEFT JOIN active_children ac     ON bp.bubble_partner_id = ac.school_id
-LEFT JOIN dropped_children dc    ON bp.bubble_partner_id = dc.school_id
+LEFT JOIN {{ ref('int_bubble__school_metrics') }} sm ON bp.bubble_partner_id = sm.school_id
 LEFT JOIN actual_dropped_children adc ON bp.bubble_partner_id = adc.school_id
 LEFT JOIN crm_partners p         ON bp.partner_name = p.partner_name
 WHERE p.partner_id IS NULL
   AND bp.partner_name IS NOT NULL
-  AND (ac.count > 0 OR dc.count > 0)
+  AND (COALESCE(sm.active_child_count, 0) > 0 OR COALESCE(sm.dropped_child_count, 0) > 0)

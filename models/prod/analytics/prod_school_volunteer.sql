@@ -2,14 +2,17 @@
 
 -- School Volunteer: volunteer assignments with partner and user details
 
+-- TODO: Integrate Platform Commons (PC) data for Volunteer-to-Partner/School mapping
 SELECT
     sv.school_volunteer_sk,
     sv.school_volunteer_id,
     sv.academic_year,
     sv.school_id,
     sv.volunteer_id,
+    sv.days_assigned,
+    sv.is_active,
     sv.is_removed,
-    sv.created_date,
+    sv.assigned_date,
     sv.modified_date,
     
     -- Partner details
@@ -33,6 +36,7 @@ SELECT
     p.confirmed_child_count,
     
     -- User details
+    -- TODO: Integrate Platform Commons (PC) data for Volunteer profiles
     v.volunteer_id AS user_id,
     v.city AS user_city,
     v.state AS user_state,
@@ -49,5 +53,5 @@ SELECT
     v.reporting_manager_role_code
 
 FROM {{ ref('fct_school_volunteer') }} sv
-LEFT JOIN {{ ref('dim_bubble_partner') }} p ON sv.school_id = p.bubble_partner_id
-LEFT JOIN {{ ref('dim_volunteer') }} v ON sv.volunteer_id = v.volunteer_id
+JOIN {{ ref('dim_bubble_partner') }} p ON sv.school_id = p.bubble_partner_id
+JOIN {{ ref('dim_volunteer') }} v ON sv.volunteer_id = v.volunteer_id

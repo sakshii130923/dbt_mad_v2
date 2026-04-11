@@ -3,6 +3,7 @@
 -- Partner Data: Comprehensive partner/school master data view
 -- Optimized: uses dim_crm_partner (already has city/state joined) + LATERAL joins for latest records
 
+-- TODO: Integrate Platform Commons (PC) data for Partner/School Master Data profiles
 SELECT
   p.crm_partner_id AS partner_id,
   p.partner_name,
@@ -37,9 +38,11 @@ SELECT
   END AS classes,
 
   -- Latest meeting date
+  -- TODO: Integrate Platform Commons (PC) data for Meeting/Touchpoint tracking
   latest_meeting.meeting_date AS date_of_first_contact,
 
   -- Latest active MOU
+  -- TODO: Integrate Platform Commons (PC) data for MOU and Legal Agreement tracking
   latest_mou.mou_url,
   latest_mou.mou_start_date,
   latest_mou.mou_end_date,
@@ -47,11 +50,12 @@ SELECT
   latest_mou.confirmed_child_count,
 
   -- Conversion info
+  -- TODO: Integrate Platform Commons (PC) data for Partner Conversion Pipeline
   latest_pa.conversion_stage AS latest_conversion_stage,
   (latest_pa.conversion_stage = 'converted') AS converted,
 
-  (p.created_at AT TIME ZONE 'Asia/Kolkata') AS partner_created_date,
-  (p.updated_at AT TIME ZONE 'Asia/Kolkata') AS partner_updated_date
+  p.created_at AS partner_created_date,
+  p.updated_at AS partner_updated_date
 
 FROM {{ ref('dim_crm_partner') }} p
 
