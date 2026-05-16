@@ -27,12 +27,16 @@ models:
         +schema: dev_staging_bubble
       crm:
         +schema: dev_staging_crm
+      platform_commons:
+        +schema: dev_staging_platform_commons
     intermediate:
       +materialized: table         # persisted for join performance
       bubble:
         +schema: dev_intermediate_bubble
       crm:
         +schema: dev_intermediate_crm
+      platform_commons:
+        +schema: dev_intermediate_platform_commons
     marts:
       core:
         +materialized: table       # persisted for query performance
