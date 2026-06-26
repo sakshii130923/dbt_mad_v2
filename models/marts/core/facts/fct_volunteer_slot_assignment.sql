@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 -- fct_volunteer_slot_assignment: One row per volunteer assigned to one slot-class-section
 -- Grain: One record per volunteer assigned to a specific teaching slot-section combination
 

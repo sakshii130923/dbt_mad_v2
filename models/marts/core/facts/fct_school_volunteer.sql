@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 -- fct_school_volunteer: One row per volunteer assigned to one school
 -- Grain: One record per volunteer assigned to one school in one academic year
 

@@ -21,27 +21,29 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 models:
   dbt_mad:
-    staging:
+    bronze:
       +materialized: view          # lightweight, no storage cost
       bubble:
-        +schema: dev_staging_bubble
+        +schema: bronze_bubble
       crm:
-        +schema: dev_staging_crm
+        +schema: bronze_crm
       platform_commons:
-        +schema: dev_staging_platform_commons
-    intermediate:
+        +schema: bronze_platform_commons
+    silver:
       +materialized: table         # persisted for join performance
       bubble:
-        +schema: dev_intermediate_bubble
+        +schema: silver_bubble
       crm:
-        +schema: dev_intermediate_crm
+        +schema: silver_crm
       platform_commons:
-        +schema: dev_intermediate_platform_commons
+        +schema: silver_platform_commons
     marts:
       core:
         +materialized: table       # persisted for query performance
-        +schema: dev_marts         # output to 'dev_marts' schema
-    prod:
+        +schema: gold_marts        # dim and fct models belong to gold marts layer
+    gold:
       +materialized: table
       analytics:
-        +schema: dev_prod_analytics  # dashboard analytics models
+        +schema: gold_analytics
+      external_apps:
+        +schema: gold_external_apps

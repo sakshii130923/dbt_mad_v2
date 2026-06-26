@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 -- fct_volunteer_assignments: Assignment of volunteers to slots and class sections
 -- Grain: One record per volunteer assigned to one teaching slot in one academic year
 

@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 -- fct_meetings: One row per meeting event
 -- Grain: One record per meeting between MAD staff and partner contacts
 

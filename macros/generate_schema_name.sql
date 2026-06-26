@@ -1,13 +1,17 @@
 {% macro generate_schema_name(custom_schema_name, node) -%}
     {#
         Override default dbt behavior.
-        If a custom schema is specified (e.g. +schema: staging),
-        use ONLY that schema name, not <target_schema>_<custom_schema>.
-        Otherwise fall back to the target schema (e.g. dev, prod).
+        If target name is 'dev', prepend 'dev_' to the custom schema name.
+        Otherwise (e.g. production), output the custom schema name without prefix.
+        If no custom schema is specified, fall back to target schema.
     #}
     {%- if custom_schema_name is none -%}
         {{ target.schema }}
     {%- else -%}
-        {{ custom_schema_name | trim }}
+        {%- if target.name == 'dev' -%}
+            dev_{{ custom_schema_name | trim }}
+        {%- else -%}
+            {{ custom_schema_name | trim }}
+        {%- endif -%}
     {%- endif -%}
 {%- endmacro %}

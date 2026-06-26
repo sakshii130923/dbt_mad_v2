@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_pc_volunteer
+    columns:
+      - name: volunteer_key
+        tests:
+          - unique
+          - not_null
+      - name: volunteer_id
+        tests:
+          - not_null
+
+  - name: fct_pc_volunteer_attendance
+    columns:
+      - name: volunteer_attendance_key
+        tests:
+          - unique
+          - not_null
+      - name: session_key
+        tests:
+          - not_null
+      - name: volunteer_key
+        tests:
+          - not_null
+      - name: attendance_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['PRESENT', 'ABSENT']
+
+  - name: fct_pc_child_attendance
+    columns:
+      - name: attendance_key
+        tests:
+          - unique
+          - not_null
+      - name: student_key
+        tests:
+          - not_null
+      - name: class_key
+        tests:
+          - not_null
+      - name: session_key
+        tests:
+          - not_null
+      - name: attendance_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['ATTENDANCE_STATUS.PRESENT', 'ATTENDANCE_STATUS.ABSENT', 'ATTENDANCE_STATUS.LATE', 'PRESENT', 'ABSENT', 'LATE']
+
+  - name: fct_pc_donations
+    columns:
+      - name: donation_key
+        tests:
+          - unique
+          - not_null
+      - name: donor_key
+        tests:
+          - not_null
+      - name: payment_status
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['PAID', 'PAYMENT_STATUS.PAID', 'PAYMENT_STATUS.PENDING', 'PENDING', 'PAYMENT_STATUS.FAILED', 'FAILED']
+
+  - name: fct_mou
+    columns:
+      - name: mou_sk
+        tests:
+          - unique
+          - not_null
+      - name: partner_sk
+        tests:
+          - not_null
+
+  - name: fct_partner_agreements
+    columns:
+      - name: agreement_sk
+        tests:
+          - unique
+          - not_null
+      - name: partner_sk
+        tests:
+          - not_null
+      - name: conversion_stage
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['first_conversation', 'not_interested', 'interested', 'dropped', 'interested_but_facing_delay', 'converted', 'new']
+
+  - name: fct_child_class_section
+    columns:
+      - name: child_class_section_sk
+        tests:
+          - unique
+          - not_null
+      - name: child_sk
+        tests:
+          - not_null
+      - name: class_section_sk
+        tests:
+          - not_null
+
+  - name: fct_volunteer_assignments
+    columns:
+      - name: volunteer_assignment_sk
+        tests:
+          - unique
+          - not_null
+      - name: volunteer_sk
+        tests:
+          - not_null

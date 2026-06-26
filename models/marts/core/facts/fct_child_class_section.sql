@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 -- fct_child_class_section: Assignment of children to class sections
 -- Grain: One record per child assigned to one class section in one academic year
 

@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 -- fct_partner_agreements: One row per partner agreement state tracking record
 -- Grain: One record per partner per stage in the agreement conversion funnel
 

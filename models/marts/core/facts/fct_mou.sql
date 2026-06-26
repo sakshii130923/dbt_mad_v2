@@ -1,3 +1,5 @@
+{{ config(materialized='table') }}
+
 -- fct_mou: One row per MOU
 -- Grain: One record per Memorandum of Understanding between org and partner
 
