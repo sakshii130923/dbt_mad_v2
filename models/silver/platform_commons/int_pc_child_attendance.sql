@@ -290,11 +290,11 @@ select distinct on (
     -- Substitution Details
     sub.substitute_id as "SubstituteId",
     sub.for_user_id as "SubstitutedUserId",
-    sub.request_type as "RequestType",
-    sub.requesting_reason as "Reason",
+    {{ clean_prefix('sub.request_type') }} as "RequestType",
+    {{ clean_prefix('sub.requesting_reason') }} as "Reason",
     
     -- Attendance Status
-    bsa.attendance_status as "ChildAttendanceStatus",
+    {{ clean_prefix('bsa.attendance_status') }} as "ChildAttendanceStatus",
     ba.subject_code as "SubjectCode",
     ba.attendance_date as "ScheduledSessionDate",
     ba.captured_by_user_id as "AttendanceTakenByUserId",

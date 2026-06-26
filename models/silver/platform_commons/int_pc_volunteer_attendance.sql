@@ -145,8 +145,8 @@ select distinct on (a.attendance_id)
     true                                                                                as is_attendance_taken_for_tagged_volunteer,
     vol.full_name                                                                       as volunteer_name,
     -- Normalized to match CSV format (strip ATTENDANCE_STATUS. prefix)
-    replace(a.attendance_status, 'ATTENDANCE_STATUS.', '')              as attendance_status,
-    a.zero_attendance_status,
+    {{ clean_prefix('a.attendance_status') }}                                           as attendance_status,
+    {{ clean_prefix('a.zero_attendance_status') }}                                      as zero_attendance_status,
 
     -- ── Substitution Info (sourced from worknodeSlotShiftSubstitute via stg_pc_substitute) ────
     -- byUser  = assignee (who covers the slot)
@@ -156,17 +156,17 @@ select distinct on (a.attendance_id)
     s.by_user_id                                                                        as assignee_user_id,
     s.for_user_id                                                                       as substituted_volunteer_user_id,
     subst_vol.full_name                                                                 as substituted_volunteer_user_name,
-    s.request_status,
-    s.request_type                                                                      as substitution_type,
-    s.requesting_reason                                                                 as substitution_reason,
+    {{ clean_prefix('s.request_status') }}                                              as request_status,
+    {{ clean_prefix('s.request_type') }}                                                as substitution_type,
+    {{ clean_prefix('s.requesting_reason') }}                                           as substitution_reason,
 
     -- ── Class Attendance Metadata ────────────────────────────────────────────────
     sc.class_attendance_taken_by_user_id,
     att_taker.full_name                                                                 as class_attendance_taken_by_user_name,
     case
-        when s.substitute_id is not null and replace(s.request_type, 'SLOT_SHIFT_SUBSTITUTE_REQ_TYPE.', '') <> 'CANCELLATION' then
+        when s.substitute_id is not null and {{ clean_prefix('s.request_type') }} <> 'CANCELLATION' then
             case
-                when replace(s.request_type, 'SLOT_SHIFT_SUBSTITUTE_REQ_TYPE.', '') = 'SUBSTITUTE' and sc.class_attendance_taken_by_user_id is not null then 'PRESENT'
+                when {{ clean_prefix('s.request_type') }} = 'SUBSTITUTE' and sc.class_attendance_taken_by_user_id is not null then 'PRESENT'
                 else 'ABSENT'
             end
         else null

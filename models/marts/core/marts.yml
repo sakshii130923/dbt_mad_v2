@@ -48,7 +48,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['ATTENDANCE_STATUS.PRESENT', 'ATTENDANCE_STATUS.ABSENT', 'ATTENDANCE_STATUS.LATE', 'PRESENT', 'ABSENT', 'LATE']
+                values: ['PRESENT', 'ABSENT', 'LATE']
 
   - name: fct_pc_donations
     columns:
@@ -63,7 +63,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['PAID', 'PAYMENT_STATUS.PAID', 'PAYMENT_STATUS.PENDING', 'PENDING', 'PAYMENT_STATUS.FAILED', 'FAILED']
+                values: ['PAID', 'PENDING', 'FAILED']
 
   - name: fct_mou
     columns:
